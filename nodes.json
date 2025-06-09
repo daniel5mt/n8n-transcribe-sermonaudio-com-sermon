@@ -1,0 +1,119 @@
+{
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "4c3cc3ca-05c6-433c-ba11-24ee42a18e47",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://api.sermonaudio.com/v2/node/sermons",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        0
+      ],
+      "id": "7c065888-ee90-4260-a7fc-87e1e99238ef",
+      "name": "HTTP Request",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "nvJz9Hobw6Tg6np6",
+          "name": "SermonAudio.com (Providence Denver)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        660,
+        0
+      ],
+      "id": "eb8c7df0-5aed-48e4-94da-2ce0bab4db06",
+      "name": "OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "uHhM3GMtCxg9mo7L",
+          "name": "DDVV 5MT n8n Sermon Publishing Workflow OpenAI Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.results[0].media.audio[1].downloadURL }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        440,
+        0
+      ],
+      "id": "598657a1-0228-4093-bcc1-4096cba7b039",
+      "name": "Get MP3 File",
+      "executeOnce": true
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Get MP3 File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get MP3 File": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f318f1eeb582bef69a56797ad1f28184a54cfe51b0e461ee190c5740946ea07e"
+  }
+}
