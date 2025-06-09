@@ -56,7 +56,7 @@
     },
     {
       "parameters": {
-        "url": "={{ $json.results[0].media.audio[1].downloadURL }}",
+        "url": "={{ $json.results[1].media.audio[1].downloadURL }}",
         "options": {
           "response": {
             "response": {
@@ -97,6 +97,11 @@
             "index": 0
           }
         ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        []
       ]
     },
     "Get MP3 File": {
