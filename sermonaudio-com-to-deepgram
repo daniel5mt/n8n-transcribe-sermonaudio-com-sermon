@@ -59,7 +59,7 @@
           "parameters": [
             {
               "name": "Authorization",
-              "value": "Token b3ba8bc4450251b9e2370ab470d398a452c559dc"
+              "value": "Token <API KEY GOES HERE>"
             }
           ]
         },
