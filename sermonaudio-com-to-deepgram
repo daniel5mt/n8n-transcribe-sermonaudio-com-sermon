@@ -1,0 +1,116 @@
+{
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "68240ed9-fa93-4e6b-ad42-4ffc26bc9257",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://api.sermonaudio.com/v2/node/sermons",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        0
+      ],
+      "id": "24e8c880-4531-4a44-9331-e6f433e1f275",
+      "name": "Fetch Sermons from SermonAudio.com",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "nvJz9Hobw6Tg6np6",
+          "name": "SermonAudio.com (Providence Denver)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.deepgram.com/v1/listen",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "smart_format",
+              "value": "true"
+            },
+            {
+              "name": "model",
+              "value": "nova-2"
+            },
+            {
+              "name": "language",
+              "value": "en-US"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Token b3ba8bc4450251b9e2370ab470d398a452c559dc"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "={{ $json.results[2].media.audio[1].downloadURL }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        440,
+        0
+      ],
+      "id": "0b8517a8-7a43-48e2-a40d-df230f000cdd",
+      "name": "Transcribe Audio File via Deepgram"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Fetch Sermons from SermonAudio.com",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Sermons from SermonAudio.com": {
+      "main": [
+        [
+          {
+            "node": "Transcribe Audio File via Deepgram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f318f1eeb582bef69a56797ad1f28184a54cfe51b0e461ee190c5740946ea07e"
+  }
+}
